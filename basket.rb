@@ -12,7 +12,18 @@ class Basket
   end
 
   def total
-    @items.sum{ |item| item[:price] }
+    subtotal = @items.sum{ |item| item[:price] }
+    (subtotal + calculate_delivery_cost(subtotal)).round(2)
+  end
+
+  private
+
+  def calculate_delivery_cost(subtotal)
+    case subtotal
+    when 0...50 then  4.95
+    when 50...90 then 2.95
+    else 0
+    end
   end
 end
 
