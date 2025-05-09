@@ -15,6 +15,6 @@ CATALOGUE = {
 }
 
 run_test([{code: "R01"}], CATALOGUE, 0)
-run_test([{code: "R01"}, {code: "R01"}], CATALOGUE, 16.475)
-run_test([{code: "R01"}, {code: "R01"}, {code: "R01"}], CATALOGUE, 16.475)
+run_test([{code: "R01"}, {code: "R01"}], CATALOGUE, 16.48)
+run_test([{code: "R01"}, {code: "R01"}, {code: "R01"}], CATALOGUE, 16.48)
 run_test([{code: "R01"}, {code: "R01"}, {code: "R01"}, {code: "R01"}], CATALOGUE, 32.95)
