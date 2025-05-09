@@ -8,7 +8,7 @@ class Basket
     ]
     @offers = offers || [
       ->(items, product_catalogue) {
-        red_count = items.count { |item| item[:name] == "Red Widget" }
+        red_count = items.count { |item| item[:code] == "R01" }
         red_pairs = red_count / 2
         red_pairs * (product_catalogue["R01"][:price] / 2)
       }
@@ -17,8 +17,10 @@ class Basket
   end
 
   def add(item_code)
+    raise ArgumentError, "Product code must be a string" unless item_code.is_a?(String)
     product = @product_catalogue[item_code]
-    @items << product if product
+    raise InvalidProductError unless product
+    @items << product
   end
 
   def total
@@ -30,7 +32,7 @@ class Basket
   private
 
   def calculate_discount
-    @offers.sum { |offer| offer.call(@items, @product_catalogue)}
+    @offers.sum { |offer| offer.call(@items, @product_catalogue) }
   end
 
   def calculate_delivery_cost(subtotal)
@@ -39,9 +41,9 @@ class Basket
 end
 
 product_catalogue = {
-  "R01" => { name: "Red Widget", price: 32.95 },
-  "G01" => { name: "Green Widget", price: 24.95 },
-  "B01" => { name: "Blue Widget", price: 7.95 }
+  "R01" => { code: "R01", name: "Red Widget", price: 32.95 },
+  "G01" => { code: "G01", name: "Green Widget", price: 24.95 },
+  "B01" => { code: "B01", name: "Blue Widget", price: 7.95 }
 }
 
 basket = Basket.new(product_catalogue, delivery_rules = nil, offers = nil)
