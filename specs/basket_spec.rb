@@ -26,12 +26,33 @@ def run_test(items, expected_total)
   end
 end
 
-run_test([], "0.00")
+def run_test_with_nil_offers(items, expected_total)
+  delivery_rules = DeliveryRules.new
+  basket = Basket.new(@product_catalogue, delivery_rules, nil)
+
+  begin
+    items.each { |code| basket.add(code) }
+    actual_total = basket.total
+    if actual_total == expected_total
+      puts "✓ Nil offers test: #{items.join(', ')} (Expected: $#{expected_total}, Got: $#{actual_total})"
+    else
+      puts "✗ Nil offers test: #{items.join(', ')} (Expected: $#{expected_total}, Got: $#{actual_total})"
+    end
+  rescue InvalidProductError, ArgumentError => e
+    puts "✗ Nil offers test failed: #{e.class}"
+  end
+end
+
+run_test([], 0.00)
 run_test(["INVALID"], "error")
 run_test([""], "error")
 run_test([12.3], "error")
-run_test(["B01", "G01"], "37.85")
-run_test(["R01", "R01"], "54.37")
-run_test(["R01", "G01"], "60.85")
-run_test(["B01", "B01", "R01", "R01", "R01"], "98.27")
+run_test(["B01", "G01"], 37.85)
+run_test(["R01", "R01"], 54.37)
+run_test(["R01", "G01"], 60.85)
+run_test(["B01", "B01", "R01", "R01", "R01"], 98.27)
 
+run_test_with_nil_offers(["B01", "G01"], 37.85)
+run_test_with_nil_offers(["R01", "R01"], 68.85)
+run_test_with_nil_offers(["R01", "G01"], 60.85)
+run_test_with_nil_offers(["B01", "B01", "R01", "R01", "R01"], 114.75)

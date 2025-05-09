@@ -4,7 +4,7 @@ class Basket
   def initialize(product_catalogue, delivery_rules, offers)
     @product_catalogue = product_catalogue
     @delivery_rules = delivery_rules
-    @offers = offers
+    @offers = Array(offers).compact
     @items = []
   end
 
@@ -18,7 +18,7 @@ class Basket
   def total
     return 0 unless @items.any?
 
-    discount = @offers.sum { |offer| offer.calculate_discount(@items, @product_catalogue) }
+    discount = @offers&.sum { |offer| offer.calculate_discount(@items, @product_catalogue) }
     subtotal = @items.sum{ |item| item[:price] } - discount
     (subtotal + @delivery_rules.calculate_charges(subtotal)).round(2)
   end
