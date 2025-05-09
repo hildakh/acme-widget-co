@@ -1,7 +1,11 @@
 class Basket
   def initialize(product_catalogue, delivery_rules, offers)
     @product_catalogue = product_catalogue
-    @delivery_rules = delivery_rules
+    @delivery_rules = delivery_rules || [
+      { min: 90, charge: 0 },
+      { min: 50, charge: 2.95 },
+      { min: 0, charge: 4.95 }
+    ]
     @offers = offers
     @items = []
   end
@@ -19,11 +23,7 @@ class Basket
   private
 
   def calculate_delivery_cost(subtotal)
-    case subtotal
-    when 0...50 then  4.95
-    when 50...90 then 2.95
-    else 0
-    end
+    @delivery_rules.find { |rule| subtotal >= rule[:min] }[:charge] || 0
   end
 end
 
