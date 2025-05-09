@@ -6,7 +6,13 @@ class Basket
       { min: 50, charge: 2.95 },
       { min: 0, charge: 4.95 }
     ]
-    @offers = offers
+    @offers = offers || [
+      ->(items, product_catalogue) {
+        red_count = items.count { |item| item[:name] == "Red Widget" }
+        red_pairs = red_count / 2
+        red_pairs * (product_catalogue["R01"][:price] / 2)
+      }
+    ]
     @items = []
   end
 
@@ -16,11 +22,16 @@ class Basket
   end
 
   def total
-    subtotal = @items.sum{ |item| item[:price] }
+    discount = calculate_discount
+    subtotal = @items.sum{ |item| item[:price] } - discount
     (subtotal + calculate_delivery_cost(subtotal)).round(2)
   end
 
   private
+
+  def calculate_discount
+    @offers.sum { |offer| offer.call(@items, @product_catalogue)}
+  end
 
   def calculate_delivery_cost(subtotal)
     @delivery_rules.find { |rule| subtotal >= rule[:min] }[:charge] || 0
@@ -34,5 +45,6 @@ product_catalogue = {
 }
 
 basket = Basket.new(product_catalogue, delivery_rules = nil, offers = nil)
+basket.add("R01")
 basket.add("R01")
 puts basket.total
