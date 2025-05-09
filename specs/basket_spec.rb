@@ -1,4 +1,4 @@
-require_relative 'basket'
+require_relative '../lib/basket'
 
 @product_catalogue = {
   "R01" => { code: "R01", name: "Red Widget",  price: 32.95 },

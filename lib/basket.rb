@@ -39,14 +39,3 @@ class Basket
     @delivery_rules.find { |rule| subtotal >= rule[:min] }[:charge] || 0
   end
 end
-
-product_catalogue = {
-  "R01" => { code: "R01", name: "Red Widget", price: 32.95 },
-  "G01" => { code: "G01", name: "Green Widget", price: 24.95 },
-  "B01" => { code: "B01", name: "Blue Widget", price: 7.95 }
-}
-
-basket = Basket.new(product_catalogue, delivery_rules = nil, offers = nil)
-basket.add("R01")
-basket.add("R01")
-puts basket.total
